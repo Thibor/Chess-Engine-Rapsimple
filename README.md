@@ -1,4 +1,4 @@
-# Chess Engine RapSimple
+# Chess Engine Rapsimple
 >Javascript UCI chess engine.
 
 Try it out here <a href="https://thibor.github.io/Chess-Engine-RapSimple/">demo1</a> <a href="https://codepen.io/thibor/pen/RYJYrp">demo2</a>.
