@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Demo</title>
+<link rel="stylesheet" href="index.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="rapsimple.js"></script>
+<script src="index.js"></script>
+<script>
+var History = new cHistory();
+var Engine = new cEngine();
+var Rapuci = new cRapuci();
+var Chess = new cChess();
+$(document).ready(function(){
+Chess.NewGame();
+});
+</script>
+</head>
+<body>
+<div id="divMain">
+<div id="divGitHub">
+<div id="GitHub" onclick="location.href='https://github.com/Thibor/Rapchess'"></div>
+</div>
+<div>
+Engine
+<input id="inEngine" value="rapsimple"/>
+UCI
+<input id="inParam" value="movetime 1000"/>
+<button onclick="Chess.NewGame()">New Game</button>
+</div>
+<div id="board"></div>
+<div id="output"></div>
+<table><tbody id="uciBody"></tbody></table>
+</div>
+</body>
+</html>
