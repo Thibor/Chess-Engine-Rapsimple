@@ -1,7 +1,7 @@
 # Chess Engine RapSimple
 >Javascript UCI chess engine.
 
-Try it out here <a href="https://thibor.github.io/Chess-Engine-RapSimple/">demo</a>.
+Try it out here <a href="https://thibor.github.io/Chess-Engine-RapSimple/">demo1</a> <a href="https://codepen.io/thibor/pen/RYJYrp">demo2</a>.
 
 To use this engine please download program Jsuci (https://sourceforge.net/projects/jsuci/).
 
