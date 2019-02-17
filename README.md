@@ -14,7 +14,7 @@ You need download program Arena (http://www.playwitharena.com/?Download).
 
 In Comand Line please write path to jsuci.exe (<b>D:\Games\Chess\Arena\Engines\jsuci\jsuci.exe</b>).
 
-In Comand Line Parameters please write path to <b>rapchess.js</b>.
+In Comand Line Parameters please write path to <b>rapsimple.js</b>.
  
  ## Setup GUI Winboard
  
@@ -22,4 +22,4 @@ In Comand Line Parameters please write path to <b>rapchess.js</b>.
  
 Inside Winboard directory please create directory <b>Jsuci</b> with file rapspeed.js and jsuci.exe, and you should click in menu <b>Engine / Edit Engine List</b> and add line:
  
-<b>"Rapspeed" -fd "..\Jsuci" -fcp "jsuci.exe rapchess.js" /fUCI</b>
+<b>"Rapsimple" -fd "..\Jsuci" -fcp "jsuci.exe rapsimple.js" /fUCI</b>
