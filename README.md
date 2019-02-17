@@ -1,4 +1,4 @@
-# Chess-Engine-RapSimple
+# Chess Engine RapSimple
 >Javascript UCI chess engines.
 * Rapchess - optimized for strength
 * Rapsimple - optimized for simplicity
