@@ -50,7 +50,7 @@ var whiteTurn = 1;
 var usColor = 0;
 var enColor = 0;
 var eeColor = 0;
-var tmpMaterial = [[],[171,240],[764,848],[826,891],[1282,1373],[2526,2646],[0xffff,0xffff]];  
+var tmpMaterial = [[],[171,240],[764,848],[826,891],[1282,1373],[2526,2646],[0xffff,0xffff]];
 var arrMaterial = new Array(32);
 var tmpMobility = [[],[],
 [[-75,-76],[-57,-54],[-9,-28],[-2,-10],[6,5],[14,12],[22, 26],[29,29],[36, 29]],//knight
@@ -65,14 +65,11 @@ return (Math.floor(Math.random() * 0x10000) << 16) | Math.floor(Math.random() * 
 }
 
 function StrToSquare(s){
-var fl = {a:0, b:1, c:2, d:3, e:4,f:5, g:6, h:7};
-var x = fl[s.charAt(0)];
-var y = 12 - parseInt(s.charAt(1));
-return (x + 4) | (y << 4);
+return (('abcdefgh'.indexOf(s[0]) + 4) | (12 - parseInt(s[1])) << 4);
 }
 
-function FormatSquare(square){
-return ['a','b','c','d','e','f','g','h'][(square & 0xf) - 4] + (12 - (square >>4));
+function FormatSquare(i){
+return 'abcdefgh'[(i & 0xf) - 4] + (12 - (i >>4));
 }
 
 function FormatMove(move){
@@ -185,14 +182,13 @@ if (chunks[2].indexOf('q') != -1)
 g_passing = 0;
 if (chunks[3].indexOf('-') == -1)
 	g_passing = StrToSquare(chunks[3]);
-g_move50 = parseInt(chunks[4]);
+g_move50 = 0;
 g_moveNumber = parseInt(chunks[5]);
 if(g_moveNumber)g_moveNumber--;
 g_moveNumber *= 2;
 if(!whiteTurn)g_moveNumber++;
 undoStack=[];
-for(undoIndex = 0;undoIndex  <= g_moveNumber;undoIndex++)
-	undoStack[undoIndex] = new cUndo();
+undoIndex = 0;
 }
 
 function IsRepetition(){
@@ -212,7 +208,7 @@ else if(add)
 
 function GenerateAllMoves(wt,attack){
 adjMobility = 0;
-g_inCheck = false;	
+g_inCheck = false;
 usColor = wt ?  colorWhite : colorBlack;
 enColor = wt ? colorBlack : colorWhite;
 eeColor = enColor | colorEmpty;
@@ -278,7 +274,7 @@ for(var n = 0;n < 64;n++){
 }
 adjInsufficient = (!pieceM) && (pieceN + (pieceB << 1) < 3);
 if(!(pieceN | pieceB | pieceM))
-	adjMobility -= 64;	
+	adjMobility -= 64;
 if(pieceB > 1)
 	adjMobility += 64;
 return moves;
@@ -325,7 +321,7 @@ if(flags & moveflagCastleKing){
 	g_board[to - 1] =  g_board[to + 1];
 	g_board[to + 1] = colorEmpty;
 }else if(flags & moveflagCastleQueen){
-	g_board[to + 1] = rook = g_board[to - 2];
+	g_board[to + 1] = g_board[to - 2];
 	g_board[to - 2] = colorEmpty;
 }else if(flags & moveflagPassing){
 	capi = whiteTurn ? to + 16 : to - 16;
@@ -417,7 +413,7 @@ if(alpha < score)
 if(alpha >= beta)
 	alpha = score;
 else while(n--){
-	if(!(++g_totalNodes & 0x1fff))	
+	if(!(++g_totalNodes & 0x1fff))
 		g_stop = ((g_timeout && (Date.now() - g_startTime > g_timeout)) ||  (g_nodeout && (g_totalNodes > g_nodeout)));
 	var cm = mu[n];
 	MakeMove(cm);
@@ -438,7 +434,7 @@ else while(n--){
 		alphaPv = alphaFm + ' ' + g_pv;
 	}
 	if(alpha >= beta)break;
-}	
+}
 g_depth = alphaDe;
 g_pv = alphaPv;
 return alpha;
@@ -446,7 +442,7 @@ return alpha;
 
 function GetScore(mu,depth,depthL,alpha,beta){
 var myInsufficient = adjInsufficient;
-var myMobility = adjMobility;	
+var myMobility = adjMobility;
 var check = 0;
 var n = mu.length;;
 var myMoves = n;
@@ -454,8 +450,8 @@ var alphaDe = 0;
 var alphaFm = '';
 var alphaPv = '';
 while(n--){
-	if(!(++g_totalNodes & 0x1fff))	
-		g_stop = ((depthL > 1) && ((g_timeout && (Date.now() - g_startTime > g_timeout)) ||  (g_nodeout && (g_totalNodes > g_nodeout))));
+	if(!(++g_totalNodes & 0x1fff))
+		g_stop = (g_timeout && (Date.now() - g_startTime > g_timeout)) || (g_nodeout && (g_totalNodes > g_nodeout));
 	var cm = mu[n];
 	MakeMove(cm);
 	var me = GenerateAllMoves(whiteTurn,depth == depthL);
@@ -490,7 +486,7 @@ while(n--){
 			bsPv = alphaPv;
 			var time = Date.now() - g_startTime;
 			var nps = Math.floor((g_totalNodes / time) * 1000);
-			postMessage('info currmove ' + bsFm + ' currmovenumber ' + n + ' nodes ' + g_totalNodes + ' time ' + time + ' nps ' + nps + ' depth ' + g_depthout + ' seldepth ' + alphaDe + ' score ' + g_scoreFm + ' pv ' + bsPv);
+			postMessage('info currmove ' + bsFm + ' currmovenumber ' + n + ' nodes ' + g_totalNodes + ' time ' + time + ' nps ' + nps + ' depth ' + depthL + ' seldepth ' + alphaDe + ' score ' + g_scoreFm + ' pv ' + bsPv);
 		}
 	}
 	if(alpha >= beta)break;
@@ -518,14 +514,14 @@ do{
 	bsIn = m1;
 	adjInsufficient = myInsufficient;
 	adjMobility = myMobility;
-	var os = GetScore(mu,1,g_depthout,-0xffff,0xffff);
+	GetScore(mu,1,g_depthout,-0xffff,0xffff);
 	if(bsIn != m1){
 		var m = mu[m1];
 		mu[m1] = mu[bsIn];
 		mu[bsIn] = m;
 	}
-	if((g_depth < g_depthout++) || (os < - 0xf000) || (os > 0xf000))break;
-}while((!depth || (g_depthout < depth)) && !g_stop && m1);
+	if(g_depth < g_depthout++)break;
+}while(!g_stop && !depth && m1);
 var time = Date.now() - g_startTime;
 var nps = Math.floor((g_totalNodes / time) * 1000);
 var ponder = bsPv.split(' ');
@@ -537,7 +533,7 @@ return true;
 
 var cUndo = function(){
 this.captured = g_captured;
-this.hash = g_hash;	
+this.hash = g_hash;
 this.passing = g_passing;
 this.castle = g_castleRights;
 this.move50 = g_move50;
@@ -558,7 +554,8 @@ if(msg == 'uci'){
 	postMessage('id name Rapsimple ' + version);
 	postMessage('id author Thibor Raven');
 	postMessage('uciok');
-}else if (msg == 'isready') postMessage('readyok');
+}else if (msg == 'isready')
+	postMessage('readyok');
 else if ((/^position (?:(startpos)|fen (.*?))\s*(?:moves\s*(.*))?$/).exec(msg)){
 	InitializeFromFen((RegExp.$1 == 'startpos') ? '' : RegExp.$2);
 	if(RegExp.$3){
