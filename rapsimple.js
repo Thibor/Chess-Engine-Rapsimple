@@ -136,10 +136,9 @@ for (var i = 0; i < pieces.length; i++){
 	if (c == '/') {
 		row++;
 		col = 0;
-	}else if(c >= '0' && c <= '9') {
-		for (var j = 0; j < parseInt(c); j++)
-			col++;
-	}else{
+	}else if(c >= '0' && c <= '9')
+		col += parseInt(c);
+	else{
 		g_phase++;
 		var b = c.toLowerCase();
 		var isWhite = b != c;
@@ -520,13 +519,13 @@ do{
 		mu[m1] = mu[bsIn];
 		mu[bsIn] = m;
 	}
+	var time = Date.now() - g_startTime;
+	var nps = Math.floor((g_totalNodes / time) * 1000);
+	postMessage('info depth ' + g_depthout + ' nodes ' + g_totalNodes + ' time ' + time + ' nps ' + nps);
 	if(g_depth < g_depthout++)break;
 }while(!g_stop && !depth && m1);
-var time = Date.now() - g_startTime;
-var nps = Math.floor((g_totalNodes / time) * 1000);
 var ponder = bsPv.split(' ');
 var pm = ponder.length > 1 ? ' ponder ' + ponder[1] : '';
-postMessage('info nodes ' + g_totalNodes + ' time ' + time + ' nps ' + nps);
 postMessage('bestmove ' + bsFm + pm);
 return true;
 }
@@ -570,9 +569,8 @@ else if ((/^position (?:(startpos)|fen (.*?))\s*(?:moves\s*(.*))?$/).exec(msg)){
 	var n = GetNumber(msg,/nodes (\d+)/,0);
 	if(!t && !d && !n){
 		var ct = whiteTurn ? GetNumber(msg,/wtime (\d+)/,0) : GetNumber(msg,/btime (\d+)/,0);
-		var ci = whiteTurn ? GetNumber(msg,/winc (\d+)/,0) : GetNumber(msg,/binc (\d+)/,0);
 		var mg = GetNumber(msg,/movestogo (\d+)/,32);
-		t = Math.floor(ct / mg) + ci - 0xff;
+		t = Math.floor(ct / (mg + 1));
 	}
 	Search(d,t,n);
 }
