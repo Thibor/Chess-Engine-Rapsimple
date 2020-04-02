@@ -1,4 +1,4 @@
-var version = '19-02-01';
+var version = '2020-04-02';
 var piecePawn = 0x01;
 var pieceKnight = 0x02;
 var pieceBishop = 0x03;
@@ -570,7 +570,12 @@ else if ((/^position (?:(startpos)|fen (.*?))\s*(?:moves\s*(.*))?$/).exec(msg)){
 	if(!t && !d && !n){
 		var ct = whiteTurn ? GetNumber(msg,/wtime (\d+)/,0) : GetNumber(msg,/btime (\d+)/,0);
 		var mg = GetNumber(msg,/movestogo (\d+)/,32);
-		t = Math.floor(ct / (mg + 1));
+		t = Math.floor(ct / mg);
+	}
+	if(t > 0){
+		t -= 0x20;
+		if(t < 1)
+			t = 1;
 	}
 	Search(d,t,n);
 }
